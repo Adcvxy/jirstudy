@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bounce Ball - NgabStudy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(to bottom, #f2f2f2, #e6f0ff);
+      overflow: hidden;
+      text-align: center;
+    }
+    h1 {
+      margin: 20px;
+      color: #228be6;
+    }
+    canvas {
+      display: block;
+      margin: auto;
+      background: #d0ebff;
+      border: 2px solid #1b6cf0;
+      border-radius: 10px;
+    }
+    #score {
+      margin-top: 10px;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    .btns {
+      margin: 15px;
+    }
+    button {
+      background: #228be6;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin: 5px;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #1864ab;
+    }
+  </style>
+</head>
+<body>
+  <h1>🏀 Bounce Ball</h1>
+  <canvas id="gameCanvas" width="400" height="500"></canvas>
+  <div id="score">Skor: 0 | XP: 0</div>
+  <div class="btns">
+    <button id="boostBtn">Boost!</button>
+    <button id="resetBtn">Reset</button>
+  </div>
+
+  <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_7a4ccf0c6f.mp3?filename=funky-funky-hip-hop-100-bpm-10900.mp3" loop></audio>
+  <audio id="bounce" src="https://cdn.pixabay.com/download/audio/2023/03/05/audio_e23f32b8b6.mp3?filename=cartoon-jump-6462.mp3"></audio>
+  <audio id="gameover" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_0b9d548bb9.mp3?filename=negative-beeps-45660.mp3"></audio>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const bgm = document.getElementById("bgm");
+    const bounceSFX = document.getElementById("bounce");
+    const gameoverSFX = document.getElementById("gameover");
+
+    let y, vy, gravity, radius, score, xp, alive, obstacles;
+
+    function initGame() {
+      y = 100;
+      vy = 0;
+      gravity = 0.5;
+      radius = 20;
+      score = 0;
+      xp = parseInt(localStorage.getItem("xp_bounce")) || 0;
+      alive = true;
+      obstacles = [];
+      document.getElementById("score").textContent = `Skor: ${score} | XP: ${xp}`;
+      bgm.play();
+    }
+
+    function drawBall() {
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = "#f39c12";
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function drawObstacles() {
+      obstacles.forEach(ob => {
+        ctx.fillStyle = "#ff4d4f";
+        ctx.fillRect(ob.x, ob.y, ob.w, ob.h);
+        ob.x += ob.vx;
+        if (ob.x < -ob.w || ob.x > canvas.width) ob.vx *= -1;
+      });
+    }
+
+    function checkCollision() {
+      const cx = canvas.width / 2;
+      for (let ob of obstacles) {
+        if (
+          cx + radius > ob.x &&
+          cx - radius < ob.x + ob.w &&
+          y + radius > ob.y &&
+          y - radius < ob.y + ob.h
+        ) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function drawGame() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBall();
+      drawObstacles();
+    }
+
+    function update() {
+      if (!alive) return;
+      vy += gravity;
+      y += vy;
+
+      if (y + radius > canvas.height) {
+        y = canvas.height - radius;
+        vy = 0;
+        endGame();
+        return;
+      }
+
+      if (y - radius < 0) {
+        y = radius;
+        vy = 0;
+      }
+
+      if (checkCollision()) {
+        endGame();
+        return;
+      }
+
+      drawGame();
+      requestAnimationFrame(update);
+    }
+
+    function boost() {
+      if (!alive) return;
+      vy = -10;
+      bounceSFX.play();
+    }
+
+    function endGame() {
+      alive = false;
+      gameoverSFX.play();
+      document.getElementById("score").innerHTML = `<strong>Game Over</strong><br>Skor: ${score} | XP: ${xp}`;
+    }
+
+    function addObstacle() {
+      obstacles.push({
+        x: Math.random() * 300,
+        y: Math.random() * 300 + 100,
+        w: 50,
+        h: 10,
+        vx: (Math.random() > 0.5 ? 1 : -1) * 2
+      });
+    }
+
+    document.getElementById("boostBtn").onclick = boost;
+    document.getElementById("resetBtn").onclick = () => {
+      initGame();
+      update();
+    };
+
+    setInterval(() => {
+      if (alive) {
+        score++;
+        xp++;
+        localStorage.setItem("xp_bounce", xp);
+        document.getElementById("score").textContent = `Skor: ${score} | XP: ${xp}`;
+
+        if (score % 15 === 0) {
+          addObstacle();
+        }
+      }
+    }, 1000);
+
+    initGame();
+    update();
+  </script>
+</body>
+</html>

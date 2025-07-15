@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Science Match - NgabStudy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(to right, #e0f7fa, #d1c4e9);
+      margin: 0;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #512da8;
+      margin-bottom: 10px;
+    }
+    #info {
+      margin: 10px 0;
+      font-size: 1.1rem;
+    }
+    #gameBoard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      max-width: 700px;
+      margin: auto;
+    }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 15px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: scale(1.03);
+    }
+    .matched {
+      background: #c8e6c9;
+      color: #2e7d32;
+      cursor: default;
+      pointer-events: none;
+    }
+    .wrong {
+      background: #ffcdd2 !important;
+      color: #b71c1c;
+    }
+    #restart {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #512da8;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    #restart:hover {
+      background: #311b92;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔬 Science Match</h1>
+  <div id="info">Skor: 0 | Nyawa: ❤️❤️❤️ | XP: 0</div>
+  <div id="gameBoard"></div>
+  <button id="restart" style="display:none;">Main Lagi</button>
+
+  <script>
+    const board = document.getElementById("gameBoard");
+    const info = document.getElementById("info");
+    const restartBtn = document.getElementById("restart");
+
+    const data = [
+      ["Fotosintesis", "Proses tumbuhan membuat makanan dengan bantuan cahaya"],
+      ["Gravitasi", "Gaya tarik bumi terhadap benda"],
+      ["Atom", "Partikel penyusun materi terkecil"],
+      ["Organisme", "Makhluk hidup tunggal"],
+      ["Suhu", "Tingkat panas atau dinginnya benda"],
+      ["Energi", "Kemampuan melakukan usaha"],
+      ["Habitat", "Tempat hidup suatu makhluk hidup"],
+      ["Siklus air", "Perputaran air dari bumi ke atmosfer"],
+      ["Magnet", "Benda yang dapat menarik logam"],
+      ["Erosi", "Pengikisan tanah oleh air atau angin"]
+    ];
+
+    let cards = [];
+    let first = null;
+    let second = null;
+    let score = 0;
+    let xp = parseInt(localStorage.getItem("xp_science")) || 0;
+    let nyawa = 5;
+    let matchedPairs = 0;
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function setupGame() {
+      const temp = [];
+      data.forEach(([term, def]) => {
+        temp.push({ text: term, pair: def, type: "term" });
+        temp.push({ text: def, pair: term, type: "def" });
+      });
+      cards = shuffle(temp);
+      board.innerHTML = "";
+      cards.forEach((card, idx) => {
+        const div = document.createElement("div");
+        div.classList.add("card");
+        div.textContent = "❓";
+        div.dataset.index = idx;
+        board.appendChild(div);
+      });
+      updateInfo();
+    }
+
+    function updateInfo() {
+      info.innerHTML = `Skor: ${score} | Nyawa: ${"❤️".repeat(nyawa)} | XP: ${xp}`;
+    }
+
+    function revealCard(index, show = true) {
+      const card = cards[index];
+      const div = board.children[index];
+      div.textContent = show ? card.text : "❓";
+    }
+
+    function handleClick(e) {
+      const idx = e.target.dataset.index;
+      if (!idx || e.target.classList.contains("matched")) return;
+      const index = parseInt(idx);
+      if (first === index || second === index) return;
+
+      revealCard(index);
+
+      if (first === null) {
+        first = index;
+      } else if (second === null) {
+        second = index;
+        checkMatch();
+      }
+    }
+
+    function checkMatch() {
+      const c1 = cards[first];
+      const c2 = cards[second];
+      const div1 = board.children[first];
+      const div2 = board.children[second];
+
+      if (c1.pair === c2.text && c2.pair === c1.text) {
+            div1.classList.add("matched");
+            div2.classList.add("matched");
+            matchedPairs++;
+            score += 10;
+            xp += 5;
+            if (nyawa < 5) nyawa++; // ✅ Tambah nyawa maksimal 5
+            localStorage.setItem("xp_science", xp);
+      } else {
+            div1.classList.add("wrong");
+            div2.classList.add("wrong");
+            nyawa--;
+            setTimeout(() => {
+            revealCard(first, false);
+            revealCard(second, false);
+            div1.classList.remove("wrong");
+            div2.classList.remove("wrong");
+            }, 800);
+      }
+
+
+      setTimeout(() => {
+        first = null;
+        second = null;
+        updateInfo();
+        if (matchedPairs === data.length || nyawa === 0) {
+          endGame();
+        }
+      }, 1000);
+    }
+
+    function endGame() {
+      board.querySelectorAll(".card").forEach(c => c.removeEventListener("click", handleClick));
+      restartBtn.style.display = "inline-block";
+    }
+
+    restartBtn.onclick = () => {
+      score = 0;
+      nyawa = 5;
+      matchedPairs = 0;
+      restartBtn.style.display = "none";
+      setupGame();
+      board.querySelectorAll(".card").forEach(c => c.addEventListener("click", handleClick));
+    };
+
+    setupGame();
+    board.querySelectorAll(".card").forEach(c => c.addEventListener("click", handleClick));
+  </script>
+</body>
+</html>

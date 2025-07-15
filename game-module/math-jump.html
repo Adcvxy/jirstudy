@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Math Jump - NgabStudy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(to bottom, #e0f2ff, #cde7ff);
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+      margin: auto;
+      background: #87cefa;
+      border: 2px solid #1b6cf0;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    #ui {
+      text-align: center;
+      padding: 20px;
+    }
+    #question {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+    .option {
+      display: inline-block;
+      background: #228be6;
+      color: #fff;
+      padding: 10px 20px;
+      margin: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .option:hover {
+      background: #1864ab;
+    }
+    #score-xp {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    #timer {
+      font-size: 1.2rem;
+      margin-top: 8px;
+      color: #d00000;
+    }
+  </style>
+</head>
+<body>
+  <div id="ui">
+    <h1>🧮 Math Jump</h1>
+    <div id="question">Loading...</div>
+    <div id="answers"></div>
+    <div id="score-xp">Skor: 0 | XP: 0</div>
+    <div id="timer">Waktu: 60s</div>
+  </div>
+  <canvas id="gameCanvas" width="600" height="300"></canvas>
+
+  <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_7a4ccf0c6f.mp3?filename=funky-funky-hip-hop-100-bpm-10900.mp3" loop></audio>
+  <audio id="correct" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_1db1099e6f.mp3?filename=correct-2-46134.mp3"></audio>
+  <audio id="wrong" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_61340eb5fb.mp3?filename=wrong-2-46060.mp3"></audio>
+
+  <script>
+    const questionEl = document.getElementById("question");
+    const answersEl = document.getElementById("answers");
+    const scoreXP = document.getElementById("score-xp");
+    const timerEl = document.getElementById("timer");
+    const bgm = document.getElementById("bgm");
+    const correctSFX = document.getElementById("correct");
+    const wrongSFX = document.getElementById("wrong");
+
+    let score = 0;
+    let xp = parseInt(localStorage.getItem("xp")) || 0;
+    let correctAnswer = 0;
+    let timeLeft = 60; // seconds
+    let gameOver = false;
+
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const player = { x: 50, y: 200, vy: 0, jumping: false };
+
+    function drawGame() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#6ab04c"; ctx.fillRect(0, 250, canvas.width, 50); // ground
+      ctx.fillStyle = "#f39c12"; ctx.beginPath(); ctx.arc(player.x, player.y, 20, 0, Math.PI * 2); ctx.fill(); // player
+      ctx.fillStyle = "#1b6cf0"; ctx.fillRect(150, 230, 100, 20); // platform
+    }
+
+    function jump() {
+      if (!player.jumping) {
+        player.vy = -10;
+        player.jumping = true;
+      }
+    }
+
+    function update() {
+      if (!gameOver) {
+        player.y += player.vy;
+        player.vy += 0.5;
+        if (player.y >= 200) {
+          player.y = 200;
+          player.vy = 0;
+          player.jumping = false;
+        }
+      }
+    }
+
+    function loop() {
+      update();
+      drawGame();
+      requestAnimationFrame(loop);
+    }
+
+    function generateQuestion() {
+      if (gameOver) return;
+      const a = Math.floor(Math.random() * 10 + 1);
+      const b = Math.floor(Math.random() * 10 + 1);
+      correctAnswer = a + b;
+      questionEl.textContent = `Berapakah ${a} + ${b} ?`;
+
+      let options = [correctAnswer];
+      while (options.length < 4) {
+        let val = correctAnswer + Math.floor(Math.random() * 7) - 3;
+        if (!options.includes(val) && val > 0) options.push(val);
+      }
+
+      options = options.sort(() => Math.random() - 0.5);
+      answersEl.innerHTML = "";
+      options.forEach(opt => {
+        const btn = document.createElement("div");
+        btn.className = "option";
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(opt);
+        answersEl.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(ans) {
+      if (gameOver) return;
+      if (ans === correctAnswer) {
+        score += 10;
+        xp += 5;
+        localStorage.setItem("xp", xp);
+        correctSFX.play();
+        jump();
+      } else {
+        wrongSFX.play();
+      }
+      updateScore();
+      generateQuestion();
+    }
+
+    function updateScore() {
+      scoreXP.textContent = `Skor: ${score} | XP: ${xp}`;
+    }
+
+    function startTimer() {
+      const interval = setInterval(() => {
+        if (timeLeft <= 0) {
+          clearInterval(interval);
+          gameOver = true;
+          timerEl.textContent = "Waktu Habis!";
+          questionEl.textContent = "⏱️ Game Selesai!";
+          answersEl.innerHTML = `<strong>Skor Akhir: ${score} | Total XP: ${xp}</strong>`;
+        } else {
+          timeLeft--;
+          timerEl.textContent = `Waktu: ${timeLeft}s`;
+        }
+      }, 1000);
+    }
+
+    // Start game
+    bgm.volume = 0.3;
+    bgm.play();
+    generateQuestion();
+    updateScore();
+    startTimer();
+    loop();
+  </script>
+</body>
+</html>
