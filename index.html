@@ -6,6 +6,45 @@
   <title>JirStudy</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .hero {
+        height: auto;
+        padding: 60px 20px;
+        text-align: center;
+      }
+
+      .hero-content h1 {
+        font-size: 2rem;
+      }
+
+      .section {
+        flex-direction: column;
+        padding: 20px;
+      }
+
+      .section img {
+        width: 100%;
+        height: auto;
+      }
+
+      .feature-box {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
     :root {
       --primary: #4da6ff;
       --light-bg: #fff;
