@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Aztec Crash - NgabStudy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(to bottom, #1a1a2e, #0f0f1f);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    h1 {
+      margin-bottom: 10px;
+      color: #1db954;
+    }
+    #multiplier {
+      font-size: 3rem;
+      font-weight: bold;
+      margin: 10px;
+      transition: color 0.3s;
+    }
+    #progress {
+      width: 80%;
+      height: 10px;
+      background: #333;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    #bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(to right, #1db954, #00ffcc);
+      transition: width 0.1s linear;
+    }
+    #controls {
+      margin-top: 20px;
+    }
+    button {
+      background: #1db954;
+      color: white;
+      border: none;
+      padding: 10px 30px;
+      font-size: 1.2rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #17a44a;
+    }
+    #status {
+      margin-top: 10px;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>💥 Aztec Crash</h1>
+  <div id="multiplier">1.00x</div>
+  <div id="progress"><div id="bar"></div></div>
+  <div id="controls">
+    <button id="pullBtn">TARIK!</button>
+  </div>
+  <div id="status">XP: <span id="xp">0</span></div>
+
+  <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2022/10/01/audio_a2a0c2f55b.mp3?filename=arcade-music-loop-11486.mp3" loop></audio>
+  <audio id="boom" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_68f8243f95.mp3?filename=explosion-6084.mp3"></audio>
+  <audio id="success" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7c3d7073f2.mp3?filename=correct-answer-3-47369.mp3"></audio>
+
+  <script>
+    const multiplierEl = document.getElementById('multiplier');
+    const bar = document.getElementById('bar');
+    const pullBtn = document.getElementById('pullBtn');
+    const xpDisplay = document.getElementById('xp');
+    const status = document.getElementById('status');
+
+    const bgm = document.getElementById('bgm');
+    const boomSFX = document.getElementById('boom');
+    const successSFX = document.getElementById('success');
+
+    let xp = parseInt(localStorage.getItem('xp_crash')) || 0;
+    let multiplier = 1.00;
+    let crashed = false;
+    let pulled = false;
+    let crashPoint = Math.random() * 4 + 1.5; // random 1.5x - 5.5x
+    let interval;
+
+    function resetGame() {
+      multiplier = 1.00;
+      crashed = false;
+      pulled = false;
+      crashPoint = (Math.random() * 4 + 1.5).toFixed(2);
+      multiplierEl.textContent = '1.00x';
+      multiplierEl.style.color = '#1db954';
+      bar.style.width = '0%';
+      pullBtn.disabled = false;
+      bgm.play();
+
+      interval = setInterval(() => {
+        if (crashed || pulled) return;
+
+        multiplier = (multiplier + 0.05).toFixed(2);
+        multiplierEl.textContent = `${multiplier}x`;
+        bar.style.width = `${Math.min(multiplier * 20, 100)}%`;
+
+        if (multiplier >= crashPoint) {
+          crash();
+        }
+      }, 100);
+    }
+
+    function crash() {
+      clearInterval(interval);
+      crashed = true;
+      pullBtn.disabled = true;
+      multiplierEl.textContent = `💥 ${multiplier}x`;
+      multiplierEl.style.color = 'red';
+      boomSFX.play();
+      status.innerHTML += ' | Gagal tarik 😵';
+      setTimeout(resetGame, 2000);
+    }
+
+    function pullOut() {
+      if (pulled || crashed) return;
+      pulled = true;
+      clearInterval(interval);
+      pullBtn.disabled = true;
+      successSFX.play();
+
+      const gain = Math.floor(multiplier * 10);
+      xp += gain;
+      localStorage.setItem('xp_crash', xp);
+      xpDisplay.textContent = xp;
+      multiplierEl.textContent = `✅ ${multiplier}x`;
+      multiplierEl.style.color = '#00ffcc';
+      status.innerHTML = `Berhasil tarik! Dapat ${gain} XP 🎉`;
+
+      setTimeout(resetGame, 2000);
+    }
+
+    pullBtn.addEventListener('click', pullOut);
+    xpDisplay.textContent = xp;
+    bgm.volume = 0.3;
+    bgm.play();
+    resetGame();
+  </script>
+</body>
+</html>

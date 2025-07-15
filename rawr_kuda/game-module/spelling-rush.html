@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Spelling Rush - NgabStudy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(to top, #f0f8ff, #d6e6ff);
+      overflow: hidden;
+      text-align: center;
+    }
+    h1 {
+      margin: 20px;
+      color: #1b6cf0;
+    }
+    canvas {
+      display: block;
+      margin: 10px auto;
+      background: #e7f3ff;
+      border-radius: 10px;
+      border: 2px solid #1b6cf0;
+    }
+    #status {
+      font-size: 1.1rem;
+      margin-top: 10px;
+    }
+    #wordDisplay {
+      font-size: 2rem;
+      margin: 15px 0;
+    }
+    #restart {
+      display: none;
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background: #1b6cf0;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    #restart:hover {
+      background: #0f5ec0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔤 Spelling Rush</h1>
+  <canvas id="gameCanvas" width="500" height="400"></canvas>
+  <div id="wordDisplay"></div>
+  <div id="status">Skor: 0 | Nyawa: ❤️❤️❤️ | XP: 0</div>
+  <button id="restart">Mulai Ulang</button>
+
+  <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_7a4ccf0c6f.mp3?filename=funky-funky-hip-hop-100-bpm-10900.mp3" loop></audio>
+  <audio id="correct" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_1db1099e6f.mp3?filename=correct-2-46134.mp3"></audio>
+  <audio id="fail" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_61340eb5fb.mp3?filename=wrong-2-46060.mp3"></audio>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const wordDisplay = document.getElementById("wordDisplay");
+    const status = document.getElementById("status");
+    const restartBtn = document.getElementById("restart");
+
+    const bgm = document.getElementById("bgm");
+    const correctSFX = document.getElementById("correct");
+    const failSFX = document.getElementById("fail");
+
+    const words = ["matematika", "adli", "bahasa", "indonesia", "rumus", "ketika", "asap", "tebal", "saya", "ilmuan"];
+    const distractions = [];
+    const alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+    let currentWord = "";
+    let typedIndex = 0;
+    let y = 50;
+    let wordSpeed = 1.5;
+
+    let score = 0;
+    let xp = parseInt(localStorage.getItem("xp_spell")) || 0;
+    let nyawa = 3;
+    let gameOver = false;
+
+    function newWord() {
+      currentWord = words[Math.floor(Math.random() * words.length)];
+      typedIndex = 0;
+      y = 50;
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // draw falling word
+      ctx.font = "28px Nunito";
+      ctx.fillStyle = "#1b6cf0";
+      const typed = currentWord.slice(0, typedIndex);
+      const rest = currentWord.slice(typedIndex);
+      ctx.fillText(typed, 150, y);
+      ctx.fillStyle = "#aaa";
+      ctx.fillText(rest, 150 + ctx.measureText(typed).width, y);
+
+      // draw distractions
+      ctx.fillStyle = "#ff4d4f";
+      distractions.forEach(d => {
+        ctx.fillText(d.letter, d.x, d.y);
+        d.y += d.speed;
+      });
+    }
+
+    function updateGame() {
+      if (gameOver) return;
+
+      y += wordSpeed;
+
+      distractions.forEach((d, i) => {
+        if (d.y > canvas.height) distractions.splice(i, 1);
+      });
+
+      if (y > canvas.height) {
+        nyawa--;
+        failSFX.play();
+        newWord();
+        y = 50;
+      }
+
+      if (nyawa <= 0) {
+        endGame();
+        return;
+      }
+
+      draw();
+      updateUI();
+      requestAnimationFrame(updateGame);
+    }
+
+    function updateUI() {
+      status.innerHTML = `Skor: ${score} | Nyawa: ${"❤️".repeat(nyawa)} | XP: ${xp}`;
+      wordDisplay.innerHTML = `<span style="color:#1b6cf0">${currentWord.slice(0, typedIndex)}</span><span>${currentWord.slice(typedIndex)}</span>`;
+    }
+
+    function addDistraction() {
+      if (Math.random() < 0.1) {
+        distractions.push({
+          letter: alphabet[Math.floor(Math.random() * 26)],
+          x: Math.random() * 450,
+          y: -20,
+          speed: 1 + Math.random()
+        });
+      }
+    }
+
+    document.addEventListener("keydown", e => {
+      if (gameOver) return;
+
+      const key = e.key.toLowerCase();
+      if (!/^[a-z]$/.test(key)) return;
+
+      const isDistraction = distractions.find(d => d.letter === key);
+      if (isDistraction) {
+        nyawa--;
+        failSFX.play();
+        updateUI();
+        return;
+      }
+
+      if (key === currentWord[typedIndex]) {
+        typedIndex++;
+        correctSFX.play();
+        if (typedIndex >= currentWord.length) {
+          score++;
+          xp += 5;
+          localStorage.setItem("xp_spell", xp);
+          newWord();
+        }
+      } else {
+        nyawa--;
+        failSFX.play();
+      }
+
+      if (nyawa <= 0) endGame();
+      updateUI();
+    });
+
+    function endGame() {
+      gameOver = true;
+      wordDisplay.innerHTML = "<strong>GAME OVER</strong>";
+      restartBtn.style.display = "inline-block";
+    }
+
+    restartBtn.onclick = () => {
+      score = 0;
+      xp = parseInt(localStorage.getItem("xp_spell")) || 0;
+      nyawa = 3;
+      gameOver = false;
+      restartBtn.style.display = "none";
+      newWord();
+      updateGame();
+    };
+
+    // start game
+    bgm.volume = 0.3;
+    bgm.play();
+    newWord();
+    setInterval(addDistraction, 800);
+    updateGame();
+  </script>
+</body>
+</html>
