@@ -4,221 +4,194 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>JirStudy</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #4da6ff;
-      --dark-bg: #121212;
-      --light-bg: #ffffff;
-      --dark-text: #f1f1f1;
-      --light-text: #222;
-    }
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      --light-bg: #fff;
+      --dark-bg: #1e1e2f;
+      --text-dark: #222;
+      --text-light: #f1f1f1;
+      --blue: #1877f2;
     }
     body {
       font-family: 'Nunito', sans-serif;
-      background: var(--light-bg);
-      color: var(--light-text);
-      transition: all 0.3s ease;
+      margin: 0;
+      padding: 0;
+      background-color: var(--light-bg);
+      color: var(--text-dark);
+      transition: 0.3s ease all;
     }
-    body.dark-mode {
-      background: var(--dark-bg);
-      color: var(--dark-text);
+    body.dark {
+      background-color: var(--dark-bg);
+      color: var(--text-light);
     }
-
-    /* Header */
     header {
-      background: #fff;
-      padding: 10px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      border-bottom: 1px solid #ddd;
+      padding: 15px 30px;
+      background-color: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 999;
     }
     .logo {
       font-size: 1.6rem;
       font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    nav {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
+      color: #222;
     }
     nav a {
-      text-decoration: none;
-      color: inherit;
+      margin: 0 12px;
       font-weight: 600;
-      transition: color 0.3s;
+      text-decoration: none;
+      color: #222;
+      transition: 0.3s;
     }
     nav a:hover {
       color: var(--primary);
     }
     .contact {
       font-size: 0.85rem;
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
-
-    /* Hero */
     .hero {
       position: relative;
-      height: 450px;
-      background-image: url("images/image 2.png");
-      background-size: cover;
-      background-position: center;
+      background: url('images/image 2.png') center/cover no-repeat;
+      height: 500px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .hero::before {
+
+    .overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4); /* Transparansi gelap */
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: white;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+    }
+
+    .hero::after {
       content: "";
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,0.4);
+      background: rgba(0,0,0,0.5);
     }
-    .hero-content {
+    .hero-text {
       position: relative;
       color: white;
-      text-align: center;
-      animation: fadeIn 1s ease-in-out;
+      max-width: 700px;
     }
-    .hero h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
+    .hero-text h1 {
+      font-size: 3rem;
+      margin: 0;
     }
-    .hero p {
-      font-size: 1.1rem;
+    .hero-text p {
+      font-size: 1.2rem;
+      margin-top: 12px;
     }
 
-    /* Section */
     .section {
-      padding: 40px 20px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: center;
+      padding: 50px 20px;
       gap: 30px;
     }
     .section img {
-      width: 350px;
-      max-width: 100%;
+      width: 300px;
       border-radius: 10px;
     }
-    .section .text {
+    .section-content {
       max-width: 500px;
     }
-    .section h2 {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
+    .section-content h2 {
+      margin-bottom: 15px;
     }
-    .section p {
-      font-size: 1rem;
+    .section-content p {
       line-height: 1.6;
     }
-
-    /* Menu cards */
-    .menu {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      padding: 40px 20px;
+    .btn {
+      padding: 10px 20px;
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 20px;
+      transition: background 0.3s;
     }
-    .menu-item {
-      background: #f9f9f9;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    .btn:hover {
+      background: #0d63c9;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
       padding: 20px;
       text-align: center;
-      width: 220px;
-      transition: transform 0.3s ease;
     }
-    .menu-item:hover {
+    .feature-item {
+      background: #f5f5f5;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: transform 0.3s;
+    }
+    .feature-item:hover {
       transform: translateY(-5px);
     }
-    .menu-item h3 {
-      margin-bottom: 10px;
+    .dark .feature-item {
+      background: #2e2e40;
     }
-    .menu-item p {
-      font-size: 0.9rem;
-      margin-bottom: 12px;
-    }
-    .menu-item button {
-      padding: 6px 14px;
-      border: none;
-      border-radius: 8px;
-      background: var(--primary);
-      color: white;
-      cursor: pointer;
-      transition: transform 0.2s, background 0.3s;
-    }
-    .menu-item button:hover {
-      background: #1a73e8;
-      transform: scale(1.05);
-    }
-
-    /* Toggle Dark Mode */
-    .toggle-mode {
-      padding: 6px 12px;
-      border-radius: 8px;
+    #toggle-mode {
       background: #eee;
       border: none;
+      padding: 5px 10px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 0.9rem;
+      margin-left: 10px;
     }
 
     /* Chatbot */
-    #chatbot-btn {
+    #chatbot {
       position: fixed;
       bottom: 20px;
       right: 20px;
-      background: #1a73e8;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      font-size: 24px;
-      cursor: pointer;
-    }
-    #chat-container {
-      display: none;
-      flex-direction: column;
-      position: fixed;
-      bottom: 90px;
-      right: 20px;
-      width: 280px;
-      height: 400px;
-      background: white;
+      width: 320px;
+      max-height: 420px;
+      background: #fff;
       border: 1px solid #ccc;
       border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      display: none;
+      flex-direction: column;
       overflow: hidden;
-      z-index: 999;
+      z-index: 1000;
     }
-    #chat-messages {
+    #chat-header {
+      background: var(--blue);
+      color: #fff;
+      padding: 10px;
+      font-weight: bold;
+    }
+    #chat-body {
       flex: 1;
       padding: 10px;
       overflow-y: auto;
-    }
-    #chat-messages div {
-      margin-bottom: 8px;
-    }
-    .ai {
-      text-align: left;
-      color: #333;
-    }
-    .user {
-      text-align: right;
-      color: #1a73e8;
+      font-size: 0.9rem;
     }
     #chat-input {
       display: flex;
@@ -226,138 +199,237 @@
     }
     #chat-input input {
       flex: 1;
-      border: none;
       padding: 10px;
+      border: none;
+      outline: none;
     }
     #chat-input button {
       padding: 10px;
-      background: var(--primary);
-      color: white;
       border: none;
+      background: var(--blue);
+      color: white;
       cursor: pointer;
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    #chat-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--blue);
+      color: white;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 999;
     }
+    .user-msg { text-align: right; color: #1a73e8; margin: 4px 0; }
+    .ai-msg { text-align: left; color: #333; margin: 4px 0; }
 
     @media (max-width: 768px) {
-      nav {
-        flex-direction: column;
-        gap: 10px;
-        margin-top: 10px;
-      }
-      .hero h1 {
-        font-size: 2rem;
-      }
       .section {
         flex-direction: column;
+        text-align: center;
       }
+      .hero-text h1 {
+        font-size: 2rem;
+      }
+    }
+   .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 20px;
+      background: white;
+      position: relative;
+      z-index: 99;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .contact {
+      font-size: 0.8rem;
+      color: #555;
+    }
+
+    .navbar {
+      display: flex;
+      gap: 20px;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: #4da6ff;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .menu-toggle:hover {
+      transform: scale(1.05);
+    }
+
+    /* Mobile View */
+    @media (max-width: 768px) {
+      .navbar {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        background: #f5f5f5;
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 8px;
+      }
+
+      .navbar.show {
+        display: flex;
+      }
+
+      .menu-toggle {
+        display: block;
+        position: absolute;
+        right: 20px;
+        top: 20px;
+      }
+
+      .contact {
+        width: 100%;
+        margin-top: 5px;
+        font-size: 0.75rem;
+      }
+    }
+
+    .feature-grid a {
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .feature-grid a:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo">📘 JirStudy</div>
-    <nav>
+  <header class="header">
+    <div class="logo">📘 <strong>JirStudy</strong></div>
+    <div class="contact">📞 Contact Person: (+62) 8526270192</div>
+
+    <!-- Mobile Toggle Button -->
+    <button class="menu-toggle" onclick="toggleNavbar()">☰ Menu</button>
+
+    <!-- NAVIGATION LINKS -->
+    <nav class="navbar" id="navbar">
       <a href="#">Menu Utama</a>
-      <a href="#">Profil</a>
-      <a href="#">Mata Pelajaran</a>
-      <a href="#">Kurikulum</a>
+      <a href="https://adcvxy.github.io/web-with-currency-weather/">Profil</a>
+      <a href="materi.html">Mata Pelajaran</a>
+      <a href="https://kurikulum.kemdikbud.go.id/">Kurikulum</a>
     </nav>
-    <div class="contact">
-      ☎️ Contact Person: (+62) 8526270192
-      <button class="toggle-mode" onclick="toggleMode()">🌓 Mode</button>
-    </div>
   </header>
 
-  <section class="hero">
+  <div class="hero">
+    <div class="overlay"></div>
     <div class="hero-content">
       <h1>JirStudy</h1>
-      <h3>Pintar Itu Seru, Kalau Bareng JirStudy</h3>
-      <p>JirStudy adalah platform edukasi digital untuk pelajar SMP, SMA, dan SMK.<br>Belajar jadi seru dan mudah.</p>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="text">
-      <h2>PLATFORM PEMBELAJARAN PRAKTIS PERTAMA DI INDONESIA</h2>
-      <p>JirStudy adalah platform pembelajaran digital untuk pelajar Indonesia dari SMP hingga SMK. Tersedia materi lengkap, soal, kuis, game edukatif, dan komunitas aktif.</p>
-    </div>
-    <img src="images/image 3.png" alt="Siswa JirStudy">
-  </section>
-
-  <div class="menu">
-    <div class="menu-item">
-      <h3>📘 Materi</h3>
-      <p>Bacaan dan video materi lengkap</p>
-      <button onclick="location.href='materi.html'">Buka</button>
-    </div>
-    <div class="menu-item">
-      <h3>🧠 Quiz</h3>
-      <p>Latihan soal & Try Out</p>
-      <button onclick="location.href='quiz.html'">Buka</button>
-    </div>
-    <div class="menu-item">
-      <h3>📚 Artikel</h3>
-      <p>Fun facts dan tips belajar</p>
-      <button onclick="location.href='artikel.html'">Buka</button>
-    </div>
-    <div class="menu-item">
-      <h3>💬 Forum</h3>
-      <p>Diskusi bareng teman</p>
-      <button onclick="location.href='forum.html'">Buka</button>
+      <p>Pintar Itu Seru, Kalau Bareng JirStudy</p>
+      <p>JirStudy adalah platform edukasi digital untuk pelajar SMP, SMA, dan SMK.</p>
     </div>
   </div>
 
-  <button id="chatbot-btn">💬</button>
-  <div id="chat-container">
-    <div id="chat-messages"></div>
+
+  <section class="section">
+    <div class="section-content">
+      <h2>Platform Pembelajaran Praktis Pertama di Indonesia</h2>
+      <p>
+        JirStudy adalah sebuah platform pembelajaran digital yang dirancang untuk membantu siswa jenjang SMP, SMA, dan SMK dalam memahami materi pelajaran secara lebih interaktif dan menyenangkan.
+      </p>
+      <button class="btn" onclick="location.href='https://adcvxy.github.io/web-with-currency-weather/'">Selengkapnya</button>
+    </div>
+    <img src="images/image 3.png" alt="Siswa" />
+  </section>
+
+  <div class="feature-grid">
+    <a href="materi.html" class="feature-item">
+      <h4>📘 Materi Pembelajaran</h4>
+      <p>Rangkuman dan video pembelajaran</p>
+    </a>
+    <a href="quiz.html" class="feature-item">
+      <h4>🧠 Quiz</h4>
+      <p>Latihan soal & try out</p>
+    </a>
+    <a href="artikel.html" class="feature-item">
+      <h4>📚 Artikel</h4>
+      <p>Fun facts dan info belajar</p>
+    </a>
+    <a href="forum.html" class="feature-item">
+      <h4>💬 Forum</h4>
+      <p>Diskusi bareng teman</p>
+    </a>
+  </div>
+
+  <button id="chat-button">💬</button>
+  <div id="chatbot">
+    <div id="chat-header">JirStudy AI</div>
+    <div id="chat-body"></div>
     <div id="chat-input">
-      <input type="text" id="userInput" placeholder="Tanya JirStudy AI..." />
-      <button onclick="sendMessage()">Kirim</button>
+      <input type="text" id="chatMsg" placeholder="Tanya sesuatu..." />
+      <button onclick="sendMsg()">➤</button>
     </div>
   </div>
 
   <script>
-    function toggleMode() {
-      document.body.classList.toggle('dark-mode');
-    }
+    document.getElementById("toggle-mode").onclick = () => {
+      document.body.classList.toggle("dark");
+    };
+    const button = document.getElementById("chat-button");
+    const bot = document.getElementById("chatbot");
+    button.onclick = () => {
+      bot.style.display = bot.style.display === "flex" ? "none" : "flex";
+    };
 
-    const chatbotBtn = document.getElementById("chatbot-btn");
-    const chatContainer = document.getElementById("chat-container");
-    const chatMessages = document.getElementById("chat-messages");
-
-    chatbotBtn.addEventListener("click", () => {
-      chatContainer.style.display = chatContainer.style.display === "flex" ? "none" : "flex";
-    });
-
-    function sendMessage() {
-      const input = document.getElementById("userInput");
+    function sendMsg() {
+      const input = document.getElementById("chatMsg");
       const msg = input.value.trim();
       if (!msg) return;
+      const chatBody = document.getElementById("chat-body");
 
-      appendMessage("user", msg);
+      const user = document.createElement("div");
+      user.className = "user-msg";
+      user.innerText = msg;
+      chatBody.appendChild(user);
+
+      const ai = document.createElement("div");
+      ai.className = "ai-msg";
+      ai.innerText = getResponse(msg);
+      chatBody.appendChild(ai);
+
       input.value = "";
-
-      // Basic response
-      let reply = "Maaf, saya belum mengerti maksud kamu.";
-      if (msg.includes("halo") || msg.includes("hai")) reply = "Halo! Ada yang bisa JirStudy bantu?";
-      else if (msg.includes("materi")) reply = "Kamu bisa klik tombol Materi di bawah ya!";
-      else if (msg.includes("quiz")) reply = "Untuk kuis, klik tombol Quiz dan pilih kelas serta bab-nya.";
-
-      setTimeout(() => {
-        appendMessage("ai", reply);
-      }, 600);
+      chatBody.scrollTop = chatBody.scrollHeight;
     }
 
-    function appendMessage(sender, text) {
-      const msg = document.createElement("div");
-      msg.className = sender;
-      msg.textContent = text;
-      chatMessages.appendChild(msg);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+    function getResponse(msg) {
+      const low = msg.toLowerCase();
+      if (low.includes("halo") || low.includes("hai")) return "Hai juga! Ada yang bisa aku bantu?";
+      if (low.includes("siapa kamu")) return "Aku JirStudy AI, teman belajarmu!";
+      if (low.includes("materi")) return "Kamu bisa lihat materi lengkap di menu Materi.";
+      if (low.includes("quiz")) return "Yuk uji dirimu lewat fitur Quiz!";
+      return "Maaf, aku belum mengerti itu 😅";
+    }
+
+    function toggleNavbar() {
+      const nav = document.getElementById("navbar");
+      nav.classList.toggle("show");
     }
   </script>
 </body>
