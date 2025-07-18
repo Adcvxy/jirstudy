@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Forum - JirStudy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Nunito', sans-serif;
+      background: #f5f7fb;
+      color: #333;
+      animation: fadeIn 0.7s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    header {
+      background: #4da6ff;
+      padding: 15px 30px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    nav a {
+      margin-left: 20px;
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+      opacity: 0.85;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .post {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .post:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    .post h3 {
+      margin-top: 0;
+      color: #1877f2;
+    }
+
+    .post p {
+      margin: 10px 0;
+      line-height: 1.6;
+    }
+
+    .post small {
+      color: #777;
+    }
+
+    .actions {
+      display: flex;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .actions button {
+      padding: 6px 12px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background: #fff;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .actions button:hover {
+      background: #f0f0f0;
+      transform: scale(1.05);
+    }
+
+    .reply-box {
+      margin-top: 10px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .reply-box input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 6px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .reply-list {
+      margin-top: 10px;
+      padding-left: 20px;
+      border-left: 3px solid #e0e0e0;
+    }
+
+    .reply-item {
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      color: #444;
+      animation: slideIn 0.4s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .new-post {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      margin-top: 40px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .new-post input, .new-post textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .new-post button {
+      background: #1877f2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s;
+    }
+
+    .new-post button:hover {
+      background: #0d63c9;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      header {
+         background: linear-gradient(to right, #60aaff, #228be6);
+         color: white;
+         padding: 20px 30px;
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+      }
+      nav {
+        margin-top: 10px;
+      }
+    }
+    .btn {
+      background: #fff;
+      color: #228be6;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .btn:hover {
+      background: #eee;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div><strong>📘 Forum</strong></div>
+    <button class="btn" onclick="location.href='index.html'">← Kembali</button>
+  </header>
+
+  <div class="container">
+    <h2>Diskusi & Artikel Terbaru</h2>
+
+    <div class="post">
+      <h3>Tips Belajar Efektif Saat Ujian</h3>
+      <p>Buat jadwal belajar dan hindari sistem kebut semalam. Belajar dengan konsisten lebih efektif!</p>
+      <small>Diposting oleh: AdliGanteng - 15 Juli 2025</small>
+      <div class="actions">
+        <button onclick="likePost(this)">❤️ <span class="like-count">0</span></button>
+        <button onclick="toggleReply(this)">💬 Balas</button>
+      </div>
+      <div class="reply-box" style="display: none;">
+        <input type="text" placeholder="Tulis balasan..." onkeydown="submitReply(event, this)">
+        <div class="reply-list"></div>
+      </div>
+    </div>
+
+    <div class="new-post">
+      <h3>Tulis Artikel / Diskusi Baru</h3>
+      <input type="text" id="judul" placeholder="Judul artikel atau topik..." />
+      <textarea id="isi" rows="5" placeholder="Tulis isi artikel / diskusi..."></textarea>
+      <button onclick="kirimPost()">Kirim</button>
+    </div>
+  </div>
+
+  <script>
+    function kirimPost() {
+      const judul = document.getElementById("judul").value.trim();
+      const isi = document.getElementById("isi").value.trim();
+      if (!judul || !isi) return alert("Harap isi semua kolom!");
+
+      const container = document.querySelector(".container");
+      const post = document.createElement("div");
+      post.className = "post";
+
+      const today = new Date();
+      const tgl = today.toLocaleDateString("id-ID", { day: 'numeric', month: 'long', year: 'numeric' });
+
+      post.innerHTML = `
+        <h3>${judul}</h3>
+        <p>${isi}</p>
+        <small>Diposting oleh: Kamu - ${tgl}</small>
+        <div class="actions">
+          <button onclick="likePost(this)">❤️ <span class="like-count">0</span></button>
+          <button onclick="toggleReply(this)">💬 Balas</button>
+        </div>
+        <div class="reply-box" style="display: none;">
+          <input type="text" placeholder="Tulis balasan..." onkeydown="submitReply(event, this)">
+          <div class="reply-list"></div>
+        </div>
+      `;
+      container.insertBefore(post, document.querySelector(".new-post"));
+      document.getElementById("judul").value = "";
+      document.getElementById("isi").value = "";
+    }
+
+    function likePost(btn) {
+      const count = btn.querySelector(".like-count");
+      count.textContent = parseInt(count.textContent) + 1;
+    }
+
+    function toggleReply(btn) {
+      const post = btn.closest(".post");
+      const replyBox = post.querySelector(".reply-box");
+      replyBox.style.display = replyBox.style.display === "none" ? "block" : "none";
+    }
+
+    function submitReply(e, input) {
+      if (e.key === "Enter" && input.value.trim() !== "") {
+        const replyList = input.parentElement.querySelector(".reply-list");
+        const reply = document.createElement("div");
+        reply.className = "reply-item";
+        reply.textContent = "💬 " + input.value.trim();
+        replyList.appendChild(reply);
+        input.value = "";
+      }
+    }
+  </script>
+
+</body>
+</html>

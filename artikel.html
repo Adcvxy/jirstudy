@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Artikel - JirStudy</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f4f4f9;
+      color: #333;
+    }
+
+    header {
+      background: #4da6ff;
+      padding: 15px 25px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .search-box {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-box input {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      width: 200px;
+      outline: none;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    .artikel {
+      background: white;
+      margin-bottom: 20px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s forwards;
+    }
+
+    .artikel h2 {
+      margin-top: 0;
+    }
+
+    .artikel p {
+      line-height: 1.6;
+    }
+
+    .actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .like-btn {
+      background: #1877f2;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .like-btn:hover {
+      background: #1059be;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        background: linear-gradient(to right, #60aaff, #228be6);
+        color: white;
+        padding: 20px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .search-box input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📚 Artikel JirStudy</h1>
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Cari artikel..." onkeyup="filterArtikel()" />
+  </div>
+</header>
+
+<div class="container" id="artikelContainer">
+  <!-- Artikel 1 -->
+  <div class="artikel">
+    <h2>Fakta Unik Tentang Hujan</h2>
+    <p>Ternyata, hujan bisa membawa aroma khas yang disebut petrichor. Ini disebabkan oleh senyawa organik dari tanah.</p>
+    <div class="actions">
+      <button class="like-btn" onclick="like(this)">👍 Like</button> <span class="like-count">0</span>
+    </div>
+  </div>
+
+  <!-- Artikel 2 -->
+  <div class="artikel">
+    <h2>Kenapa Langit Berwarna Biru?</h2>
+    <p>Langit terlihat biru karena molekul udara menyebarkan cahaya biru lebih banyak daripada warna lainnya.</p>
+    <div class="actions">
+      <button class="like-btn" onclick="like(this)">👍 Like</button> <span class="like-count">0</span>
+    </div>
+  </div>
+
+  <!-- Artikel 3 -->
+  <div class="artikel">
+    <h2>Tips Belajar Efektif di Rumah</h2>
+    <p>Gunakan teknik Pomodoro: 25 menit belajar, 5 menit istirahat. Ulangi 4 kali, lalu istirahat lebih lama.</p>
+    <div class="actions">
+      <button class="like-btn" onclick="like(this)">👍 Like</button> <span class="like-count">0</span>
+    </div>
+  </div>
+
+  <!-- Artikel 4 -->
+  <div class="artikel">
+    <h2>Sejarah Komputer Modern</h2>
+    <p>Komputer pertama dikembangkan oleh Alan Turing, lalu berkembang menjadi komputer modern seperti sekarang.</p>
+    <div class="actions">
+      <button class="like-btn" onclick="like(this)">👍 Like</button> <span class="like-count">0</span>
+    </div>
+  </div>
+
+  <!-- Artikel Tambahan -->
+  <div class="artikel">
+    <h2>Kenapa Kita Perlu Tidur?</h2>
+    <p>Tidur penting untuk mengembalikan energi, mengatur hormon, dan menjaga fungsi otak serta daya tahan tubuh.</p>
+    <div class="actions">
+      <button class="like-btn" onclick="like(this)">👍 Like</button> <span class="like-count">0</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  function like(button) {
+    const count = button.nextElementSibling;
+    let current = parseInt(count.innerText);
+    count.innerText = current + 1;
+  }
+
+  function filterArtikel() {
+    const input = document.getElementById("searchInput").value.toLowerCase();
+    const articles = document.querySelectorAll(".artikel");
+    articles.forEach((artikel) => {
+      const text = artikel.innerText.toLowerCase();
+      if (text.includes(input)) {
+        artikel.classList.remove("hidden");
+      } else {
+        artikel.classList.add("hidden");
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
